@@ -7,7 +7,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 
-import cz.msebera.android.httpclient.client.ClientProtocolException;
 import ro.pub.cs.systems.eim.practicaltest02.general.Constants;
 import ro.pub.cs.systems.eim.practicaltest02.model.WeatherForecastInformation;
 
@@ -64,11 +63,6 @@ public class ServerThread extends Thread {
                 Log.i(Constants.TAG, "[SERVER THREAD] A connection request was received from " + socket.getInetAddress() + ":" + socket.getLocalPort());
                 CommunicationThread communicationThread = new CommunicationThread(this, socket);
                 communicationThread.start();
-            }
-        } catch (ClientProtocolException clientProtocolException) {
-            Log.e(Constants.TAG, "[SERVER THREAD] An exception has occurred: " + clientProtocolException.getMessage());
-            if (Constants.DEBUG) {
-                clientProtocolException.printStackTrace();
             }
         } catch (IOException ioException) {
             Log.e(Constants.TAG, "[SERVER THREAD] An exception has occurred: " + ioException.getMessage());
