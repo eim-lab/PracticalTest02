@@ -13,11 +13,11 @@ import ro.pub.cs.systems.eim.practicaltest02.general.Utilities;
 
 public class ClientThread extends Thread {
 
-    private String address;
-    private int port;
-    private String city;
-    private String informationType;
-    private TextView weatherForecastTextView;
+    private final String address;
+    private final int port;
+    private final String city;
+    private final String informationType;
+    private final TextView weatherForecastTextView;
 
     private Socket socket;
 
@@ -33,44 +33,25 @@ public class ClientThread extends Thread {
     public void run() {
         try {
             socket = new Socket(address, port);
-            if (socket == null) {
-                Log.e(Constants.TAG, "[CLIENT THREAD] Could not create socket!");
-                return;
-            }
             BufferedReader bufferedReader = Utilities.getReader(socket);
             PrintWriter printWriter = Utilities.getWriter(socket);
-            if (bufferedReader == null || printWriter == null) {
-                Log.e(Constants.TAG, "[CLIENT THREAD] Buffered Reader / Print Writer are null!");
-                return;
-            }
             printWriter.println(city);
             printWriter.flush();
             printWriter.println(informationType);
             printWriter.flush();
             String weatherInformation;
             while ((weatherInformation = bufferedReader.readLine()) != null) {
-                final String finalizedWeateherInformation = weatherInformation;
-                weatherForecastTextView.post(new Runnable() {
-                   @Override
-                    public void run() {
-                       weatherForecastTextView.setText(finalizedWeateherInformation);
-                   }
-                });
+                final String finalizedWeatherInformation = weatherInformation;
+                weatherForecastTextView.post(() -> weatherForecastTextView.setText(finalizedWeatherInformation));
             }
         } catch (IOException ioException) {
             Log.e(Constants.TAG, "[CLIENT THREAD] An exception has occurred: " + ioException.getMessage());
-            if (Constants.DEBUG) {
-                ioException.printStackTrace();
-            }
         } finally {
             if (socket != null) {
                 try {
                     socket.close();
                 } catch (IOException ioException) {
                     Log.e(Constants.TAG, "[CLIENT THREAD] An exception has occurred: " + ioException.getMessage());
-                    if (Constants.DEBUG) {
-                        ioException.printStackTrace();
-                    }
                 }
             }
         }
