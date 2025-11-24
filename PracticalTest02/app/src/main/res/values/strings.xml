@@ -4,7 +4,7 @@
     <string name="server_port">Port</string>
     <string name="connect">Connect</string>
     <string name="client">CLIENT</string>
-    <string name="client_address">Address</string>
+    <string name="server_address">Server address</string>
     <string name="client_port">Port</string>
     <string name="city">City</string>
     <string name="get_weather_forecast">Get Weather Forecast</string>

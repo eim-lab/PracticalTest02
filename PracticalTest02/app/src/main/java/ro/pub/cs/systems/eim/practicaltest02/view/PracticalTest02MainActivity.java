@@ -1,6 +1,6 @@
 package ro.pub.cs.systems.eim.practicaltest02.view;
 
-import android.support.v7.app.AppCompatActivity;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -9,6 +9,8 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import ro.pub.cs.systems.eim.practicaltest02.R;
 import ro.pub.cs.systems.eim.practicaltest02.general.Constants;

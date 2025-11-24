@@ -43,8 +43,8 @@ public class CommunicationThread extends Thread {
                 return;
             }
             Log.i(Constants.TAG, "[COMMUNICATION THREAD] Waiting for parameters from client (city / information type!");
-            String city = bufferedReader.readLine();
-            String informationType = bufferedReader.readLine();
+            String city = bufferedReader.readLine().trim();
+            String informationType = bufferedReader.readLine().trim();
             if (city == null || city.isEmpty() || informationType == null || informationType.isEmpty()) {
                 Log.e(Constants.TAG, "[COMMUNICATION THREAD] Error receiving parameters from client (city / information type!");
                 return;
@@ -55,31 +55,15 @@ public class CommunicationThread extends Thread {
                 Log.i(Constants.TAG, "[COMMUNICATION THREAD] Getting the information from the cache...");
                 weatherForecastInformation = data.get(city);
             } else {
-                Log.i(Constants.TAG, "[COMMUNICATION THREAD] Getting the information from the webservice...");
+                Log.i(Constants.TAG, "[COMMUNICATION THREAD] Getting the information from the webservice.");
 
                 String pageSourceCode = "";
-//                if(false) {
-//                    HttpPost httpPost = new HttpPost(Constants.WEB_SERVICE_ADDRESS);
-//                    List<NameValuePair> params = new ArrayList<>();
-//                    params.add(new BasicNameValuePair("q", city));
-//                    //params.add(new BasicNameValuePair("mode", Constants.WEB_SERVICE_MODE));
-//                    params.add(new BasicNameValuePair("APPID", Constants.WEB_SERVICE_API_KEY));
-//                    params.add(new BasicNameValuePair("units", Constants.UNITS));
-//                    UrlEncodedFormEntity urlEncodedFormEntity = new UrlEncodedFormEntity(params, HTTP.UTF_8);
-//                    httpPost.setEntity(urlEncodedFormEntity);
-//                    ResponseHandler<String> responseHandler = new BasicResponseHandler();
-//
-//                    pageSourceCode = httpClient.execute(httpPost, responseHandler);
-
                 String query = Constants.WEB_SERVICE_ADDRESS +
                         "?q=" + city + "&APPID=" +
                         Constants.WEB_SERVICE_API_KEY +
                         "&units=" + Constants.UNITS;
 
-
                 OkHttpClient client = new OkHttpClient();
-
-
                 Request request = new Request.Builder()
                         .url(query)
                         .build();
@@ -93,11 +77,16 @@ public class CommunicationThread extends Thread {
                     Log.e(Constants.TAG, "[COMMUNICATION THREAD] Error getting the information from the webservice!");
                     return;
                 } else
-                    Log.i(Constants.TAG, pageSourceCode);
+                    Log.i(Constants.TAG, "Response: " + pageSourceCode);
 
                 // Updated for openweather API
                 JSONObject content = new JSONObject(pageSourceCode);
-
+                if(content.has("cod") && content.getString("cod").equals("404")){
+                      Log.e(Constants.TAG, "[COMMUNICATION THREAD] '" + city + "' not found!");
+                       printWriter.println("'" + city + "' not found!");
+                       printWriter.flush();
+                       return;
+                }
                 JSONArray weatherArray = content.getJSONArray(Constants.WEATHER);
                 JSONObject weather;
                 String condition = "";
